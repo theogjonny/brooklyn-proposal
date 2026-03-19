@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Brooklyn ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin:0;
+    overflow:hidden;
+    font-family: 'Poppins', sans-serif;
+    color:white;
+}
+
+/* Background */
+body::before {
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:url('bg.jpg') center/cover no-repeat;
+    filter: blur(6px) brightness(0.6);
+    z-index:-1;
+}
+
+/* Start screen */
+#startScreen {
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:black;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+#startBtn {
+    padding:20px 50px;
+    font-size:28px;
+    background:red;
+    border:none;
+    border-radius:15px;
+    color:white;
+    cursor:pointer;
+    font-family:'Bangers', cursive;
+}
+
+/* Logo */
+.logo {
+    width:300px;
+    margin-bottom:20px;
+}
+
+/* Main box */
+.container {
+    display:none;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:rgba(255,255,255,0.95);
+    color:black;
+    padding:40px;
+    border-radius:20px;
+    width:80%;
+    max-width:500px;
+    text-align:center;
+}
+
+.title {
+    font-family:'Bangers', cursive;
+    font-size:48px;
+}
+
+button {
+    padding:15px 30px;
+    font-size:20px;
+    margin:15px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.yes { background:#ff1a1a; color:white; }
+.no {
+    background:#222;
+    color:white;
+    position:absolute;
+}
+
+/* Llama floating */
+.llama {
+    position:fixed;
+    width:120px;
+    bottom:20px;
+    right:20px;
+    animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-15px);}
+}
+
+/* Victory */
+#victory {
+    display:none;
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:linear-gradient(#ff0000,#660000);
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+
+.banner {
+    font-family:'Bangers', cursive;
+    font-size:60px;
+}
+
+/* Confetti */
+.confetti {
+    position:fixed;
+    width:10px;
+    height:10px;
+    top:0;
+    animation:fall linear infinite;
+}
+
+@keyframes fall {
+    to {transform:translateY(100vh) rotate(360deg);}
+}
+</style>
+</head>
+
+<body>
+
+<!-- START -->
+<div id="startScreen">
+    <img src="logo.jpg" class="logo">
+    <h1>Brooklyn's Lobby 🎮</h1>
+    <button id="startBtn" onclick="start()">ENTER GAME</button>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+    <div class="title">Brooklyn 🐐❤️</div>
+
+    <p>
+    You already know you're the GOAT...<br><br>
+    And honestly? I miss being on your team.
+    </p>
+
+    <p>
+    I’d drop anywhere on the map…<br>
+    as long as it’s with you 😏
+    </p>
+
+    <h2>Will you be my girlfriend again? 🌷</h2>
+
+    <button class="yes" onclick="yes()">YES</button>
+    <button class="no" id="noBtn">NO</button>
+
+</div>
+
+<!-- LLAMA -->
+<img src="llama.png" class="llama">
+
+<!-- VICTORY -->
+<div id="victory">
+    <div class="banner">🏆 VICTORY ROYALE 🏆</div>
+    <p>Brooklyn said YES ❤️</p>
+</div>
+
+<audio id="winSound">
+<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b0d9f.mp3">
+</audio>
+
+<script>
+
+function start(){
+    document.getElementById("startScreen").style.display="none";
+    document.querySelector(".container").style.display="block";
+}
+
+const noBtn = document.getElementById("noBtn");
+
+noBtn.addEventListener("mouseover", () => {
+    const x = Math.random() * (window.innerWidth - 120);
+    const y = Math.random() * (window.innerHeight - 60);
+    noBtn.style.position="fixed";
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+});
+
+function yes(){
+    document.querySelector(".container").style.display="none";
+    document.getElementById("victory").style.display="flex";
+    document.getElementById("winSound").play();
+
+    for(let i=0;i<150;i++){
+        let c=document.createElement("div");
+        c.className="confetti";
+        c.style.left=Math.random()*100+"vw";
+        c.style.background=`hsl(${Math.random()*360},100%,50%)`;
+        c.style.animationDuration=(Math.random()*2+2)+"s";
+        document.body.appendChild(c);
+    }
+}
+
+// Tulips
+setInterval(()=>{
+    let t=document.createElement("div");
+    t.innerHTML="🌷";
+    t.style.position="fixed";
+    t.style.left=Math.random()*100+"vw";
+    t.style.top="-50px";
+    t.style.fontSize="25px";
+    t.style.animation="fall 5s linear";
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(),5000);
+},200);
+
+</script>
+
+</body>
+</html>
