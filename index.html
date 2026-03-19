@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Brooklyn ❤️</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
@@ -9,23 +10,32 @@
 <style>
 body {
     margin:0;
+    font-family:'Poppins', sans-serif;
     overflow:hidden;
-    font-family: 'Poppins', sans-serif;
     color:white;
 }
 
 /* Background */
-body::before {
-    content:"";
+.section-bg {
     position:fixed;
     width:100%;
     height:100%;
     background:url('bg.jpg') center/cover no-repeat;
-    filter: blur(6px) brightness(0.6);
-    z-index:-1;
+    filter:brightness(0.6);
+    z-index:-2;
 }
 
-/* Start screen */
+/* Flash effect */
+#flash {
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:white;
+    opacity:0;
+    z-index:999;
+}
+
+/* Start */
 #startScreen {
     position:fixed;
     width:100%;
@@ -37,24 +47,23 @@ body::before {
     align-items:center;
 }
 
+.logo {
+    width:80%;
+    max-width:300px;
+}
+
 #startBtn {
-    padding:20px 50px;
-    font-size:28px;
+    padding:15px 40px;
+    font-size:22px;
     background:red;
     border:none;
-    border-radius:15px;
+    border-radius:12px;
     color:white;
     cursor:pointer;
     font-family:'Bangers', cursive;
 }
 
-/* Logo */
-.logo {
-    width:300px;
-    margin-bottom:20px;
-}
-
-/* Main box */
+/* Main card */
 .container {
     display:none;
     position:absolute;
@@ -63,22 +72,22 @@ body::before {
     transform:translate(-50%,-50%);
     background:rgba(255,255,255,0.95);
     color:black;
-    padding:40px;
+    padding:25px;
     border-radius:20px;
-    width:80%;
-    max-width:500px;
+    width:90%;
+    max-width:400px;
     text-align:center;
 }
 
 .title {
     font-family:'Bangers', cursive;
-    font-size:48px;
+    font-size:40px;
 }
 
 button {
-    padding:15px 30px;
-    font-size:20px;
-    margin:15px;
+    padding:12px 25px;
+    font-size:18px;
+    margin:10px;
     border:none;
     border-radius:10px;
     cursor:pointer;
@@ -91,18 +100,13 @@ button {
     position:absolute;
 }
 
-/* Llama floating */
-.llama {
+/* Llama full screen */
+#llamaScreen {
+    display:none;
     position:fixed;
-    width:120px;
-    bottom:20px;
-    right:20px;
-    animation:float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-    0%,100%{transform:translateY(0);}
-    50%{transform:translateY(-15px);}
+    width:100%;
+    height:100%;
+    background:url('llama.png') center/cover no-repeat;
 }
 
 /* Victory */
@@ -115,11 +119,18 @@ button {
     justify-content:center;
     align-items:center;
     flex-direction:column;
+    text-align:center;
+    padding:20px;
 }
 
 .banner {
     font-family:'Bangers', cursive;
-    font-size:60px;
+    font-size:50px;
+}
+
+.message {
+    font-size:20px;
+    margin-top:15px;
 }
 
 /* Confetti */
@@ -134,15 +145,31 @@ button {
 @keyframes fall {
     to {transform:translateY(100vh) rotate(360deg);}
 }
+
+/* Shake */
+.shake {
+    animation:shake 0.4s;
+}
+
+@keyframes shake {
+    0%{transform:translate(0,0);}
+    25%{transform:translate(5px,-5px);}
+    50%{transform:translate(-5px,5px);}
+    75%{transform:translate(5px,5px);}
+    100%{transform:translate(0,0);}
+}
 </style>
 </head>
 
 <body>
 
+<div class="section-bg"></div>
+<div id="flash"></div>
+
 <!-- START -->
 <div id="startScreen">
     <img src="logo.jpg" class="logo">
-    <h1>Brooklyn's Lobby 🎮</h1>
+    <h2>Brooklyn's Lobby 🎮</h2>
     <button id="startBtn" onclick="start()">ENTER GAME</button>
 </div>
 
@@ -161,20 +188,23 @@ button {
     as long as it’s with you 😏
     </p>
 
-    <h2>Will you be my girlfriend again? 🌷</h2>
+    <h3>Will you be my girlfriend again? 🌷</h3>
 
     <button class="yes" onclick="yes()">YES</button>
     <button class="no" id="noBtn">NO</button>
 
 </div>
 
-<!-- LLAMA -->
-<img src="llama.png" class="llama">
+<!-- LLAMA SCREEN -->
+<div id="llamaScreen"></div>
 
 <!-- VICTORY -->
 <div id="victory">
     <div class="banner">🏆 VICTORY ROYALE 🏆</div>
-    <p>Brooklyn said YES ❤️</p>
+    <div class="message">
+        Thank you for giving me another chance ❤️<br>
+        I won’t fumble this time.
+    </div>
 </div>
 
 <audio id="winSound">
@@ -183,26 +213,46 @@ button {
 
 <script>
 
+// Start
 function start(){
     document.getElementById("startScreen").style.display="none";
     document.querySelector(".container").style.display="block";
 }
 
+// Moving NO
 const noBtn = document.getElementById("noBtn");
-
 noBtn.addEventListener("mouseover", () => {
-    const x = Math.random() * (window.innerWidth - 120);
-    const y = Math.random() * (window.innerHeight - 60);
+    const x = Math.random() * (window.innerWidth - 100);
+    const y = Math.random() * (window.innerHeight - 50);
     noBtn.style.position="fixed";
     noBtn.style.left = x + "px";
     noBtn.style.top = y + "px";
 });
 
+// YES
 function yes(){
     document.querySelector(".container").style.display="none";
-    document.getElementById("victory").style.display="flex";
+
+    // Flash
+    const flash = document.getElementById("flash");
+    flash.style.opacity = 1;
+    setTimeout(()=>flash.style.opacity=0,200);
+
+    // Shake
+    document.body.classList.add("shake");
+    setTimeout(()=>document.body.classList.remove("shake"),400);
+
+    // Show llama first
+    document.getElementById("llamaScreen").style.display="block";
+
+    setTimeout(()=>{
+        document.getElementById("llamaScreen").style.display="none";
+        document.getElementById("victory").style.display="flex";
+    },1200);
+
     document.getElementById("winSound").play();
 
+    // Confetti
     for(let i=0;i<150;i++){
         let c=document.createElement("div");
         c.className="confetti";
@@ -212,19 +262,6 @@ function yes(){
         document.body.appendChild(c);
     }
 }
-
-// Tulips
-setInterval(()=>{
-    let t=document.createElement("div");
-    t.innerHTML="🌷";
-    t.style.position="fixed";
-    t.style.left=Math.random()*100+"vw";
-    t.style.top="-50px";
-    t.style.fontSize="25px";
-    t.style.animation="fall 5s linear";
-    document.body.appendChild(t);
-    setTimeout(()=>t.remove(),5000);
-},200);
 
 </script>
 
